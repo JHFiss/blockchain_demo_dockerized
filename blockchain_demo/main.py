@@ -32,9 +32,9 @@ print(str(n2.my_blockchain))
 while 1:
     time.sleep(1)
 
-n0.stop()
-n1.stop()
-n2.stop()
+n0.join()
+n1.join()
+n2.join()
 
 
 
