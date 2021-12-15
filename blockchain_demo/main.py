@@ -1,3 +1,4 @@
+import time
 
 import computationnode
 
@@ -6,7 +7,7 @@ n0 = computationnode.ComputationNode("127.0.0.1", 8001, 'Testdata', 1)
 
 n1 = computationnode.ComputationNode("127.0.0.1", 8002, 'Testdata', 2)
 
-n2 = computationnode.ComputationNode("127.0.0.1", 8002, 'Testdata', 2)
+n2 = computationnode.ComputationNode("127.0.0.1", 8003, 'Testdata', 3)
 # Schedule three calls *concurrently*:
 
 n0.start()
@@ -28,9 +29,14 @@ print(str(n0.my_blockchain))
 print(str(n1.my_blockchain))
 print(str(n2.my_blockchain))
 
+while 1:
+    time.sleep(1)
+
 n0.stop()
 n1.stop()
 n2.stop()
+
+
 
 
 
