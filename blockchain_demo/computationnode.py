@@ -23,6 +23,10 @@ class ComputationNode(Node):
         """
         self.logger.info('Node ' + str(self.id) + ' started adding data: ' + str(data))
         self.my_blockchain.add_data(data)
+        # While the blockchain is not valid tear it down, until it is valid again
+        while not self.my_blockchain.validate_blockchain():
+            self.logger.debug('Node ' + str(self.id) + ' removing last block trying to reach valid state!')
+            self.my_blockchain.chain.pop()
         self.logger.info('Node ' + str(self.id) + ' added Block: ' + str(self.my_blockchain.chain[len(self.my_blockchain.chain) - 1]))
         self.logger.debug('Node ' + str(self.id) + ' sending new blockchain to others')
         json_str = jsonpickle.encode(self.my_blockchain)
