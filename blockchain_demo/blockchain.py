@@ -1,7 +1,6 @@
 
 import time
 from typing import TypeVar, Generic
-
 import block
 
 T = TypeVar('T')

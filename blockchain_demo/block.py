@@ -33,8 +33,6 @@ class Block(Generic[T]):
         while self.MINE_COND not in mine_hash:
             self.nonce += 1
             mine_hash = self.calc_hash()
-            # Print the current value of nonce for debug and demonstration purposes
-            # print(self.nonce)
         self.this_hash = mine_hash
         return mine_hash
 
@@ -43,12 +41,6 @@ class Block(Generic[T]):
         self.data = data
         self.time_stamp = timestamp
         self.this_hash = self.calc_hash()
-
-        # print the values of a block after initialisation for debug and demonstration purposes
-        print(self.this_hash)
-        print(self.prev_hash)
-        print(self.data)
-        print(self.time_stamp)
 
     def __str__(self):
         return "{\n previous Hash: %s \n " \

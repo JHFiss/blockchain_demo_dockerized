@@ -1,40 +1,50 @@
+import socket
 import time
-
+import os
 import computationnode
+import logging
+
+CONST_PORT = 8001
+SUBNET_MASK = "10.5.0."
 
 
-n0 = computationnode.ComputationNode("127.0.0.1", 8001, 'Testdata', 1)
+def connect(hn, port):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    socket.setdefaulttimeout(1)
+    result = sock.connect_ex((hn, port))
+    sock.close()
+    return result == 0
 
-n1 = computationnode.ComputationNode("127.0.0.1", 8002, 'Testdata', 2)
 
-n2 = computationnode.ComputationNode("127.0.0.1", 8003, 'Testdata', 3)
+logging.basicConfig(filename='blockchain.log', level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+node_num = os.environ['NODENUM']
+
+hostname = socket.gethostname()
+ip = socket.gethostbyname(hostname)
+
+logger.debug('IP: ' + str(ip))
+logger.debug('NODE: ' + str(node_num))
+
+n0 = computationnode.ComputationNode(ip, CONST_PORT, 'Testdata', node_num)
+
 # Schedule three calls *concurrently*:
 
 n0.start()
-n1.start()
-n2.start()
 
-n1.connect_with_node('127.0.0.1', 8001)
-n2.connect_with_node('127.0.0.1', 8001)
-n2.connect_with_node('127.0.0.1', 8002)
-
-n0.add_new_data('Testdata1')
-n1.add_new_data('Testdata2')
-n0.add_new_data('Testdata3')
-n1.add_new_data('Testdata4')
-n2.add_new_data('Testdata5')
-n2.add_new_data('Testdata6')
-
-print(str(n0.my_blockchain))
-print(str(n1.my_blockchain))
-print(str(n2.my_blockchain))
-
+for i in range(0, 16):
+    res = connect(SUBNET_MASK + str(i), CONST_PORT)
+    if res:
+        n0.connect_with_node(SUBNET_MASK + str(i), CONST_PORT)
+i = 0
 while 1:
     time.sleep(1)
+    n0.add_new_data('Node' + str(node_num) + ' Testdata' + str(i))
+    logger.info(str(n0.my_blockchain))
+    i = i + 1
 
 n0.join()
-n1.join()
-n2.join()
 
 
 
